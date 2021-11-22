@@ -75,7 +75,7 @@ void stg_dtor(stg *p_stg){
 
 int read_word(str *p_line, str *p_word, int start){
     int i = 0;
-    while (p_line->str[start + i] != 32 && p_line->str[start + i] != '\0' && p_line->str[start + i] != EOF){
+    while (p_line->str[start + i] != 32 && p_line->str[start + i] != '\n' && p_line->str[start + i] != EOF){
         if (i == MAX_LENGTH){
             fprintf(stderr, "Too long string on input.\nGiven string:\n%s", p_line->str);
             return -1;
@@ -199,15 +199,6 @@ int make_rel(str *p_line, stg *p_rel, stg *p_uni){
             if (word2.str[word2.length - 1] == ')'){
                 word2.str[word2.length - 1] = '\0';
                 word2.length--;
-                char *word2_new;
-                word2_new = malloc(word2.length * sizeof(char));
-                int j = 0;
-                while (j <= word2.length){
-                    word2_new[j] = word2.str[j];
-                    j++;
-                }
-                str_dtor(&word2);
-                word2.str = word2_new;
             }
             else {
                 fprintf(stderr, "Invalid formulation of relation, accepted format is (domain range)!!");
@@ -292,13 +283,28 @@ int store_line(FILE *p_file, stg *p_uni, stg *p_stg, int *lines_count){
 }
 
 int main(){
-    stg uni;
     FILE *p_f;
+    p_f = fopen("text.txt", "r");
+    if (p_f == NULL){
+        return 0;
+    }
+    stg uni;
+    stg stg;
+    int lines;
     int i = 0;
+    int pocet_zadanych_radku = 2;
+    while (i < pocet_zadanych_radku){
+        if (store_line(p_f, &uni, &stg, &lines) == -1){
+            return -1;
+        }
+        i++;
+    }
+    i = 0;
     while (i < uni.length){
         word_dtor(uni.array[i]);
         i++;
     }
+    stg_dtor(&stg);
     stg_dtor(&uni);
     fclose(p_f);
     return 0;
