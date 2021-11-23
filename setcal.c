@@ -237,7 +237,7 @@ int store_line(FILE *p_file, stg *p_uni, stg *p_stg, int *lines_count){
     }
     (*lines_count)++;
     if (line.str[0] == 'U' && *lines_count == 1){
-        if(line.str[1] == 32){
+        if(line.str[1] == ' '){ 
             stg_ctor(p_uni, 'U');
             if (make_uni(&line, p_uni) == -1){
                 return -1;
@@ -290,9 +290,9 @@ int main(){
     }
     stg uni;
     stg stg;
-    int lines;
+    int lines = 0; //tady jsem pripsala tu nulu
     int i = 0;
-    int pocet_zadanych_radku = 2;
+    int pocet_zadanych_radku = 1; //bylo tady pocet_zadanych_radku = 2, ale pak to vypisovalo chybu
     while (i < pocet_zadanych_radku){
         if (store_line(p_f, &uni, &stg, &lines) == -1){
             return -1;
