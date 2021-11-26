@@ -160,6 +160,18 @@ int make_uni(str *p_line, stg *p_uni){
     return 1;
 }
 
+int unique_element(stg *p_set){
+    for (int i = 0; i < p_set->length - 1; i++){
+        for (int j = i + 1; j < p_set->length; j++){
+            if (p_set->array[i] == p_set->array[j]){
+                fprintf(stderr, "Element %s is not unique.\n", p_set->array[i]);
+                return -1;
+            }
+        }
+    }
+    return 1;
+}
+
 int make_set(str *p_line, stg *p_set, stg*p_uni){
     int progres = 2;
     int i = 0;
@@ -181,6 +193,23 @@ int make_set(str *p_line, stg *p_set, stg*p_uni){
         str_dtor(&word);
         p_set->length++;
         i++;
+    }
+    
+    if (unique_element(p_set) == -1){
+        return -1;
+    }
+    return 1;
+}
+
+int unique_pair(stg *rel){
+    const int pair = 2;
+    for (int i = 0; i < rel->length; i += pair){
+        for (int j = i + pair; j < rel->length; j += pair){
+            if(rel->array[i] == rel->array[j] && rel->array[i+1] == rel->array[j+1]){
+                fprintf(stderr, "Invalid relation (one pair more then once).");
+                return -1;
+            }
+        }
     }
     return 1;
 }
@@ -225,6 +254,9 @@ int make_rel(str *p_line, stg *p_rel, stg *p_uni){
             return -1;
         }
     }
+    if (unique_pair(p_rel) == -1){
+        return -1;
+    }
     return 1;
 }
 
@@ -243,9 +275,10 @@ int store_line(FILE *p_file, stg *p_uni, stg *p_stg, int *lines_count){
                 return -1;
             }
             while (j < p_uni->length){
-                printf(" %s", p_uni->array[j]);
+                printf("%s ", p_uni->array[j]);
                 j++;
             }
+            printf("\n");
             str_dtor(&line);
             return 2;
         }
@@ -257,9 +290,10 @@ int store_line(FILE *p_file, stg *p_uni, stg *p_stg, int *lines_count){
                 return -1;
             }
             while (j < p_stg->length){
-                printf(" %s", p_stg->array[j]);
+                printf("%s ", p_stg->array[j]);
                 j++;
             }
+            printf("\n");
             str_dtor(&line);
             return 1;
         }
@@ -274,6 +308,7 @@ int store_line(FILE *p_file, stg *p_uni, stg *p_stg, int *lines_count){
                 printf("(%s %s)", p_stg->array[j], p_stg->array[j + 1]);
                 j += 2;
             }
+            printf("\n");
             str_dtor(&line);
             return 0;
         }
@@ -290,9 +325,9 @@ int main(){
     }
     stg uni;
     stg stg;
-    int lines = 0; //tady jsem pripsala tu nulu
+    int lines = 0; 
     int i = 0;
-    int pocet_zadanych_radku = 1; //bylo tady pocet_zadanych_radku = 2, ale pak to vypisovalo chybu
+    int pocet_zadanych_radku = 3;
     while (i < pocet_zadanych_radku){
         if (store_line(p_f, &uni, &stg, &lines) == -1){
             return -1;
