@@ -307,6 +307,18 @@ int make_uni(str *p_line, stg *p_uni){
     return 1;
 }
 
+int unique_element(stg *p_set){
+    for (int i = 0; i < p_set->length - 1; i++){
+        for (int j = i + 1; j < p_set->length; j++){
+            if (p_set->array[i] == p_set->array[j]){
+                fprintf(stderr, "Element %s is not unique.\n", p_set->array[i]);
+                return -1;
+            }
+        }
+    }
+    return 1;
+}
+
 /**
  * @brief This function stores pointers to all the words read from line indexed as set.
  * 
@@ -341,6 +353,23 @@ int make_set(str *p_line, stg *p_set, stg*p_uni){
         word_dtor(word.str);
         p_set->length++;
         i++;
+    }
+    
+    if (unique_element(p_set) == -1){
+        return -1;
+    }
+    return 1;
+}
+
+int unique_pair(stg *rel){
+    const int pair = 2;
+    for (int i = 0; i < rel->length; i += pair){
+        for (int j = i + pair; j < rel->length; j += pair){
+            if(rel->array[i] == rel->array[j] && rel->array[i+1] == rel->array[j+1]){
+                fprintf(stderr, "Invalid relation (one pair more then once).");
+                return -1;
+            }
+        }
     }
     return 1;
 }
@@ -392,6 +421,9 @@ int make_rel(str *p_line, stg *p_rel, stg *p_uni){
             fprintf(stderr, "Invalid formulation of relation, accepted format is (domain range)!!");
             return -1;
         }
+    }
+    if (unique_pair(p_rel) == -1){
+        return -1;
     }
     return 1;
 }
@@ -449,7 +481,7 @@ int make_comm(str *p_line, comm *p_comm_stg){
             if (comm_args(p_line, p_comm_stg, cmnd.length, 2) == -1){
                 return -1;
             }
-            return 1;
+          return 1;
         }
         i++;
     }
@@ -460,14 +492,13 @@ int make_comm(str *p_line, comm *p_comm_stg){
             if (comm_args(p_line, p_comm_stg, cmnd.length, 3) == -1){
                 return -1;
             }
-            return 1;
         }
         i++;
     }
     fprintf(stderr, "The name '%s' of command was not recognized.", cmnd.str);
     return -1;
 }
-
+        
 /**
  * @brief This functions decides, what data is on line and stores it in designated storage.
  * 
